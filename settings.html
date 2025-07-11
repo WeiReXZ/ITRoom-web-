@@ -48,6 +48,7 @@
                 <div class="section-header">
                     <h2><i class="fas fa-cog"></i> Настройки</h2>
                 </div>
+                <div id="authStatusPanel"></div>
                 <form id="settingsForm" class="profile-form">
                     <div class="form-group">
                         <label for="profileUsername">Имя пользователя</label>
@@ -104,19 +105,93 @@
                     </div>
                     <button type="submit" class="btn btn-primary btn-block">Сохранить</button>
                 </form>
+                <!-- Кнопка выхода внутри секции настроек -->
+                <button id="logoutBtn" class="btn btn-primary btn-block" style="display: none; margin-top: 20px;">
+                    <i class="fas fa-sign-out-alt"></i> Выйти из аккаунта
+                </button>
             </section>
         </main>
     </div>
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Проверяем сохранённого пользователя
+            const authStatusPanel = document.getElementById('authStatusPanel');
+            const settingsForm = document.getElementById('settingsForm');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const usernameDisplay = document.getElementById('usernameDisplay');
+            
+            // Проверяем авторизацию
             const savedUser = localStorage.getItem('currentUser');
+            
             if (savedUser) {
                 const user = JSON.parse(savedUser);
-                document.getElementById('usernameDisplay').textContent = user.name;
+                
+                // Показываем настройки и кнопку выхода
+                settingsForm.style.display = 'block';
+                logoutBtn.style.display = 'block';
+                
+                // Заполняем данные пользователя
+                usernameDisplay.textContent = user.name;
                 document.getElementById('profileUsername').value = user.name;
                 document.getElementById('profileEmail').textContent = user.email;
+                
+                // Отображаем статус
+                authStatusPanel.innerHTML = `
+                    <div class="auth-status">
+                        <i class="fas fa-user-check"></i>
+                        <span>Вы вошли как: ${user.email}</span>
+                    </div>
+                `;
+            } else {
+                // Пользователь не авторизован
+                settingsForm.style.display = 'none';
+                logoutBtn.style.display = 'none';
+                usernameDisplay.textContent = 'Гость';
+                
+                // Показываем сообщение
+                authStatusPanel.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-user-lock"></i>
+                        <h3>Вы не авторизованы</h3>
+                        <p>Для доступа к настройкам войдите в аккаунт</p>
+                        <div class="auth-buttons" style="margin-top: 20px; display: flex; gap: 12px;">
+                            <a href="login.html" class="btn btn-primary">
+                                <i class="fas fa-sign-in-alt"></i> Войти
+                            </a>
+                            <a href="register.html" class="btn btn-outline">
+                                <i class="fas fa-user-plus"></i> Регистрация
+                            </a>
+                        </div>
+                    </div>
+                `;
             }
+            
+            // Обработчик кнопки выхода
+            logoutBtn.addEventListener('click', function() {
+                // Удаляем данные пользователя
+                localStorage.removeItem('currentUser');
+                
+                // Перенаправляем на страницу регистрации
+                window.location.href = 'register.html';
+            });
+
+            // Обработка сохранения настроек
+            settingsForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const username = document.getElementById('profileUsername').value.trim();
+                
+                if (username) {
+                    // Обновляем данные в localStorage
+                    const savedUser = localStorage.getItem('currentUser');
+                    if (savedUser) {
+                        const user = JSON.parse(savedUser);
+                        user.name = username;
+                        localStorage.setItem('currentUser', JSON.stringify(user));
+                        usernameDisplay.textContent = username;
+                        alert('Настройки сохранены!');
+                    }
+                }
+            });
         });
     </script>
 </body>
