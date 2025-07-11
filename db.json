@@ -1,0 +1,234 @@
+{
+  "users": [
+    {
+      "id": "1752157304200",
+      "name": "Deni",
+      "email": "endwnk@gmail.com",
+      "password": "deni",
+      "favorites": [],
+      "history": [],
+      "settings": {
+        "darkMode": false
+      }
+    },
+    {
+      "id": "1752160439846",
+      "name": "deni",
+      "email": "blackskydonhaziev1@gmail.com",
+      "password": "deni",
+      "favorites": [],
+      "history": [],
+      "settings": {
+        "darkMode": false
+      }
+    },
+    {
+      "id": "1752176589602",
+      "name": "Дени",
+      "email": "donden493@gmail.com",
+      "password": "N5T-mm5-R2w-G2L",
+      "favorites": [],
+      "history": [],
+      "preferences": {
+        "darkMode": false,
+        "notifications": true
+      },
+      "createdAt": "2025-07-10T19:43:09.602Z"
+    },
+    {
+      "id": "1752182253662",
+      "name": "Дени",
+      "email": "denidonhadjiev@gmail.com",
+      "password": "Svj-b3B-eGd-TE8",
+      "favorites": [],
+      "history": [],
+      "preferences": {
+        "darkMode": false,
+        "notifications": true
+      },
+      "createdAt": "2025-07-10T21:17:33.662Z"
+    }
+  ],
+  "activities": [
+    {
+      "id": 1,
+      "name": "Прогулка в парке",
+      "description": "Расслабляющая прогулка на свежем воздухе с возможностью насладиться природой.",
+      "mood": [
+        "happy",
+        "neutral",
+        "relaxed"
+      ],
+      "time": 1,
+      "budget": "free",
+      "people": [
+        "1",
+        "2",
+        "3",
+        "group"
+      ],
+      "category": "outdoor",
+      "rating": 4.5
+    },
+    {
+      "id": 2,
+      "name": "Поход в кино",
+      "description": "Посетите кинотеатр и посмотрите новый фильм с друзьями или семьёй.",
+      "mood": [
+        "happy",
+        "neutral",
+        "relaxed"
+      ],
+      "time": 3,
+      "budget": "medium",
+      "people": [
+        "2",
+        "3",
+        "group"
+      ],
+      "category": "entertainment",
+      "rating": 4.3
+    },
+    {
+      "id": 3,
+      "name": "Вечер настольных игр",
+      "description": "Соберитесь с друзьями и устройте увлекательный вечер настольных игр.",
+      "mood": [
+        "happy",
+        "energetic"
+      ],
+      "time": 3,
+      "budget": "low",
+      "people": [
+        "2",
+        "3",
+        "group"
+      ],
+      "category": "social",
+      "rating": 4.7
+    },
+    {
+      "id": 4,
+      "name": "Чтение книги",
+      "description": "Погрузитесь в интересную книгу дома или в уютном кафе.",
+      "mood": [
+        "relaxed",
+        "neutral"
+      ],
+      "time": 2,
+      "budget": "free",
+      "people": [
+        "1"
+      ],
+      "category": "intellectual",
+      "rating": 4.2
+    },
+    {
+      "id": 5,
+      "name": "Пробежка",
+      "description": "Энергичная пробежка на свежем воздухе для поддержания здоровья.",
+      "mood": [
+        "energetic",
+        "happy"
+      ],
+      "time": 1,
+      "budget": "free",
+      "people": [
+        "1",
+        "2"
+      ],
+      "category": "sport",
+      "rating": 4.4
+    },
+    {
+      "id": 6,
+      "name": "Посещение кафе",
+      "description": "Встретьтесь с другом или семьёй в уютном кафе за чашкой кофе.",
+      "mood": [
+        "happy",
+        "relaxed"
+      ],
+      "time": 2,
+      "budget": "medium",
+      "people": [
+        "2",
+        "3",
+        "group"
+      ],
+      "category": "social",
+      "rating": 4.1
+    },
+    {
+      "id": 7,
+      "name": "Музей или выставка",
+      "description": "Узнайте что-то новое, посетив интересную выставку или музей.",
+      "mood": [
+        "neutral",
+        "relaxed"
+      ],
+      "time": 2,
+      "budget": "low",
+      "people": [
+        "1",
+        "2",
+        "3"
+      ],
+      "category": "cultural",
+      "rating": 4.6
+    },
+    {
+      "id": 8,
+      "name": "Домашний кинотеатр",
+      "description": "Устройте уютный вечер с фильмом и попкорном в домашней обстановке.",
+      "mood": [
+        "relaxed",
+        "neutral"
+      ],
+      "time": 2,
+      "budget": "free",
+      "people": [
+        "1",
+        "2",
+        "3",
+        "group"
+      ],
+      "category": "entertainment",
+      "rating": 4
+    },
+    {
+      "id": 9,
+      "name": "Кулинарный мастер-класс",
+      "description": "Научитесь готовить новые блюда или испеките что-то вкусное.",
+      "mood": [
+        "happy",
+        "energetic"
+      ],
+      "time": 3,
+      "budget": "medium",
+      "people": [
+        "1",
+        "2",
+        "3"
+      ],
+      "category": "creative",
+      "rating": 4.8
+    },
+    {
+      "id": 10,
+      "name": "Йога или медитация",
+      "description": "Расслабляющая практика для ума и тела в спокойной обстановке.",
+      "mood": [
+        "relaxed",
+        "neutral"
+      ],
+      "time": 1,
+      "budget": "free",
+      "people": [
+        "1",
+        "2"
+      ],
+      "category": "wellness",
+      "rating": 4.5
+    }
+  ]
+}

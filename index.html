@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TimeFinder - Умные рекомендации для досуга</title>
+    <link rel="stylesheet" href="all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="firebase-app-compat.js"></script>
+    <script src="firebase-auth-compat.js"></script>
+    <script src="firebase-database-compat.js"></script>
+    <script src="firebase-config.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Боковое меню -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-compass"></i>
+                <span>WhatToDo</span>
+            </div>
+            
+            <nav class="main-nav">
+                <a href="index.html" class="nav-item active" data-section="главная">
+                    <i class="fas fa-home"></i>
+                    <span>Главная</span>
+                </a>
+                <a href="favorites.html" class="nav-item" data-section="избранное">
+                    <i class="fas fa-heart"></i>
+                    <span>Избранное</span>
+                </a>
+                <a href="settings.html" class="nav-item" data-section="настройки">
+                    <i class="fas fa-cog"></i>
+                    <span>Настройки</span>
+                </a>
+            </nav>
+            
+            <div class="user-profile">
+                <div class="avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-info">
+                    <span class="username" id="usernameDisplay">Гость</span>
+                    <span class="user-status">Подробнее</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Основное содержимое -->
+        <main class="main-content">
+            <header class="main-header">
+                <h1>Чем займёмся сегодня?</h1>
+                <div class="auth-buttons" id="authButtons">
+                    <a class="btn btn-outline" id="loginBtn" href="login.html">Войти</a>
+                    <a class="btn btn-primary" id="registerBtn" href="/register.html">Регистрация</a>
+                </div>
+                <div class="user-menu" id="userMenu" style="display: none;">
+                    <button class="btn btn-icon" id="notificationsBtn">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge">3</span>
+                    </button>
+                    <div class="user-avatar" id="userAvatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Форма рекомендаций -->
+            <section class="preferences-card">
+                <div class="card-header">
+                    <h2><i class="fas fa-sliders-h"></i> Ваши предпочтения</h2>
+                    <button class="btn btn-icon">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+                
+                <form id="preferencesForm" class="preferences-form">
+                    <div class="form-row">
+                        <div class="form-group mood-selector">
+                            <label>Настроение</label>
+                            <div class="mood-options">
+                                <input type="radio" name="mood" id="mood-happy" value="happy" checked>
+                                <label for="mood-happy" class="mood-option">
+                                    <i class="fas fa-smile"></i>
+                                    <span>Радостное</span>
+                                </label>
+                                
+                                <input type="radio" name="mood" id="mood-neutral" value="neutral">
+                                <label for="mood-neutral" class="mood-option">
+                                    <i class="fas fa-meh"></i>
+                                    <span>Нейтральное</span>
+                                </label>
+                                
+                                <input type="radio" name="mood" id="mood-sad" value="sad">
+                                <label for="mood-sad" class="mood-option">
+                                    <i class="fas fa-frown"></i>
+                                    <span>Грустное</span>
+                                </label>
+                                
+                                <input type="radio" name="mood" id="mood-energetic" value="energetic">
+                                <label for="mood-energetic" class="mood-option">
+                                    <i class="fas fa-bolt"></i>
+                                    <span>Энергичное</span>
+                                </label>
+                                
+                                <input type="radio" name="mood" id="mood-relaxed" value="relaxed">
+                                <label for="mood-relaxed" class="mood-option">
+                                    <i class="fas fa-couch"></i>
+                                    <span>Расслабленное</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="time">Сколько времени есть (часов)</label>
+                            <div class="range-slider">
+                                <input type="range" id="time" min="1" max="12" value="2" step="1">
+                                <div class="range-value"><span id="timeValue">2</span> ч</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="budget">Бюджет</label>
+                            <select id="budget" class="styled-select">
+                                <option value="free">Бесплатно</option>
+                                <option value="low" selected>Низкий (до 1000 ₽)</option>
+                                <option value="medium">Средний (1000-5000 ₽)</option>
+                                <option value="high">Высокий (от 5000 ₽)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="people">Количество людей</label>
+                            <select id="people" class="styled-select">
+                                <option value="1">Один</option>
+                                <option value="2">Двое</option>
+                                <option value="3">Несколько (3-5)</option>
+                                <option value="group">Компания (5+)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top: 32px;">
+                        <i class="fas fa-magic"></i> Найти идеи
+                    </button>
+                </form>
+            </section>
+
+            <!-- Рекомендации -->
+            <section class="recommendations-section content-section" id="recommendationsSection" style="display: none;">
+                <div class="section-header">
+                    <h2><i class="fas fa-lightbulb"></i> Рекомендации для вас</h2>
+                    <div class="sort-options">
+                        <span>Сортировка:</span>
+                        <select class="styled-select small">
+                            <option>По релевантности</option>
+                            <option>По популярности</option>
+                            <option>По времени</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="recommendations-container" id="recommendationsContainer">
+                    <div class="empty-state">
+                        <i class="fas fa-search"></i>
+                        <h3>Найдите идеи для досуга</h3>
+                        <p>Заполните форму выше, чтобы получить персонализированные рекомендации</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+    // Примеры идей для досуга
+    const activities = [
+        {
+            name: "Пойти погулять",
+            description: "Прогуляйтесь в парке или по городу.",
+            mood: ["happy", "neutral", "sad", "energetic", "relaxed"],
+            time: 1,
+            budget: "free",
+            people: ["1", "2", "3", "group"]
+        },
+        {
+            name: "Сходить в кино",
+            description: "Посетите кинотеатр с друзьями или семьёй.",
+            mood: ["happy", "neutral", "relaxed"],
+            time: 2,
+            budget: "medium",
+            people: ["2", "3", "group"]
+        },
+        {
+            name: "Поиграть в настольные игры",
+            description: "Соберитесь с друзьями и устройте вечер настольных игр.",
+            mood: ["happy", "neutral", "relaxed"],
+            time: 3,
+            budget: "low",
+            people: ["2", "3", "group"]
+        },
+        {
+            name: "Почитать книгу",
+            description: "Погрузитесь в интересную книгу дома или в кафе.",
+            mood: ["relaxed", "sad", "neutral"],
+            time: 2,
+            budget: "free",
+            people: ["1"]
+        },
+        {
+            name: "Пойти на пробежку",
+            description: "Пробежка на свежем воздухе зарядит энергией.",
+            mood: ["energetic", "happy"],
+            time: 1,
+            budget: "free",
+            people: ["1", "2"]
+        },
+        {
+            name: "Сходить в кафе",
+            description: "Встретьтесь с другом или семьёй в уютном кафе.",
+            mood: ["happy", "relaxed"],
+            time: 2,
+            budget: "medium",
+            people: ["2", "3", "group"]
+        },
+        {
+            name: "Посетить выставку или музей",
+            description: "Узнайте что-то новое и вдохновляющее.",
+            mood: ["neutral", "relaxed"],
+            time: 2,
+            budget: "low",
+            people: ["1", "2", "3"]
+        },
+        {
+            name: "Посмотреть фильм дома",
+            description: "Устройте домашний кинотеатр с попкорном.",
+            mood: ["relaxed", "sad", "neutral"],
+            time: 2,
+            budget: "free",
+            people: ["1", "2", "3", "group"]
+        }
+    ];
+
+    // Показать секцию
+    function showSection(sectionId) {
+        // Скрываем все секции
+        document.querySelectorAll('.content-section').forEach(section => {
+            section.style.display = 'none';
+        });
+        
+        // Показываем выбранную секцию
+        const section = document.getElementById(sectionId);
+        if (section) {
+            section.style.display = 'block';
+        }
+    }
+
+    // Вспомогательные функции
+    function getBudgetText(budget) {
+        const budgets = {
+            free: "Бесплатно",
+            low: "Низкий",
+            medium: "Средний",
+            high: "Высокий"
+        };
+        return budgets[budget] || budget;
+    }
+
+    function getPeopleText(people) {
+        if (Array.isArray(people)) {
+            if (people.includes('group')) return 'Для компании';
+            if (people.includes('3')) return 'Для нескольких';
+            if (people.includes('2')) return 'Для двоих';
+            return 'Для одного';
+        } else {
+            if (people === 'group') return 'Для компании';
+            if (people === '3') return 'Для нескольких';
+            if (people === '2') return 'Для двоих';
+            return 'Для одного';
+        }
+    }
+
+    // Обновление рекомендаций
+    function updateRecommendations() {
+        // Всегда показываем секцию рекомендаций
+        showSection('recommendationsSection');
+        
+        let mood = document.querySelector('input[name="mood"]:checked').value;
+        let time = parseInt(document.getElementById('time').value);
+        let budget = document.getElementById('budget').value;
+        let people = document.getElementById('people').value;
+        
+        const container = document.getElementById('recommendationsContainer');
+        
+        // Показываем loader
+        let loader = document.createElement('div');
+        loader.className = 'loader';
+        loader.innerHTML = '<div class="loader-spinner"></div><p>Ищем лучшие варианты...</p>';
+        container.innerHTML = '';
+        container.appendChild(loader);
+        
+        // Имитация задержки для UX
+        setTimeout(() => {
+            let filtered = activities.filter(act => 
+                act.mood.includes(mood) &&
+                act.time <= time &&
+                (budget === 'any' || act.budget === budget) &&
+                (people === 'any' || act.people.includes(people))
+            );
+            
+            if (filtered.length > 0) {
+                let html = '';
+                filtered.forEach(activity => {
+                    html += `
+                        <div class="activity-card fade-in" data-id="${activity.id}">
+                            <h3>${activity.name}</h3>
+                            <p>${activity.description}</p>
+                            <div class="activity-meta">
+                                <span><i class="fas fa-clock"></i> ${activity.time} ч</span>
+                                <span><i class="fas fa-wallet"></i> ${getBudgetText(activity.budget)}</span>
+                                <span><i class="fas fa-users"></i> ${getPeopleText(activity.people)}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-search"></i>
+                        <h3>Ничего не найдено</h3>
+                        <p>Попробуйте изменить параметры поиска</p>
+                    </div>
+                `;
+            }
+        }, 800);
+    }
+
+    // Инициализация формы рекомендаций
+    function initRecommendations() {
+        const form = document.getElementById('preferencesForm');
+        if (!form) return;
+        
+        // Обновление значения времени
+        const timeInput = document.getElementById('time');
+        if (timeInput) {
+            timeInput.addEventListener('input', function() {
+                document.getElementById('timeValue').textContent = this.value;
+            });
+        }
+        
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            updateRecommendations();
+        });
+    }
+
+    // Инициализация при загрузке страницы
+    document.addEventListener('DOMContentLoaded', function() {
+        // Проверяем сохранённого пользователя
+        const savedUser = localStorage.getItem('currentUser');
+        if (savedUser) {
+            const user = JSON.parse(savedUser);
+            document.getElementById('usernameDisplay').textContent = user.name;
+            document.getElementById('authButtons').style.display = 'none';
+            document.getElementById('userMenu').style.display = 'flex';
+            
+            // Выводим сообщение в консоль
+            console.log(`👋 Добро пожаловать, ${user.name}! Вы успешно вошли в систему.`);
+        }
+
+        initRecommendations();
+        
+        // Установка начального значения времени
+        document.getElementById('timeValue').textContent = 
+            document.getElementById('time').value;
+    });
+    </script>
+</body>
+</html>

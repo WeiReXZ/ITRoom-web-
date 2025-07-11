@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Избранное — TimeFinder</title>
+    <link rel="stylesheet" href="all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="firebase-app-compat.js"></script>
+    <script src="firebase-auth-compat.js"></script>
+    <script src="firebase-database-compat.js"></script>
+    <script src="firebase-config.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-compass"></i>
+                <span>WhatToDo</span>
+            </div>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Главная</span>
+                </a>
+                <a href="favorites.html" class="nav-item active">
+                    <i class="fas fa-heart"></i>
+                    <span>Избранное</span>
+                </a>
+                <a href="settings.html" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Настройки</span>
+                </a>
+            </nav>
+            
+            <div class="user-profile">
+                <div class="avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-info">
+                    <span class="username" id="usernameDisplay">Гость</span>
+                    <span class="user-status">Подробнее</span>
+                </div>
+            </div>
+        </aside>
+        <main class="main-content">
+            <section class="favorites-section content-section" id="favoritesSection">
+                <div class="section-header">
+                    <h2><i class="fas fa-heart"></i> Избранное</h2>
+                </div>
+                <div class="favorites-container" id="favoritesContainer">
+                    <div class="empty-state">
+                        <i class="fas fa-heart-broken"></i>
+                        <h3>Нет избранных идей</h3>
+                        <p>Добавьте понравившиеся идеи в избранное</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Проверяем сохранённого пользователя
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                const user = JSON.parse(savedUser);
+                document.getElementById('usernameDisplay').textContent = user.name;
+            }
+        });
+    </script>
+</body>
+</html>

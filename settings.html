@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Настройки — TimeFinder</title>
+    <link rel="stylesheet" href="all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="firebase-app-compat.js"></script>
+    <script src="firebase-auth-compat.js"></script>
+    <script src="firebase-database-compat.js"></script>
+    <script src="firebase-config.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-compass"></i>
+                <span>WhatToDo</span>
+            </div>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Главная</span>
+                </a>
+                <a href="favorites.html" class="nav-item">
+                    <i class="fas fa-heart"></i>
+                    <span>Избранное</span>
+                </a>
+                <a href="settings.html" class="nav-item active">
+                    <i class="fas fa-cog"></i>
+                    <span>Настройки</span>
+                </a>
+            </nav>
+            
+            <div class="user-profile">
+                <div class="avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-info">
+                    <span class="username" id="usernameDisplay">Гость</span>
+                    <span class="user-status">Подробнее</span>
+                </div>
+            </div>
+        </aside>
+        <main class="main-content">
+            <section class="settings-section content-section" id="settingsSection">
+                <div class="section-header">
+                    <h2><i class="fas fa-cog"></i> Настройки</h2>
+                </div>
+                <form id="settingsForm" class="profile-form">
+                    <div class="form-group">
+                        <label for="profileUsername">Имя пользователя</label>
+                        <input type="text" id="profileUsername" placeholder="Ваше имя">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <span id="profileEmail"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="themeToggle">Тёмная тема</label>
+                        <input type="checkbox" id="themeToggle">
+                    </div>
+                    <hr>
+                    <h3 style="margin-top:24px;">Мои предпочтения</h3>
+                    <div class="form-group">
+                        <label for="prefActivityType">Любимый тип активности</label>
+                        <select id="prefActivityType" class="styled-select">
+                            <option value="any">Не важно</option>
+                            <option value="active">Активный отдых</option>
+                            <option value="relax">Спокойный отдых</option>
+                            <option value="home">Дома</option>
+                            <option value="outdoor">На улице</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="prefBudget">Бюджет</label>
+                        <select id="prefBudget" class="styled-select">
+                            <option value="any">Не важно</option>
+                            <option value="free">Бесплатно</option>
+                            <option value="low">Низкий (до 1000 ₽)</option>
+                            <option value="medium">Средний (1000-5000 ₽)</option>
+                            <option value="high">Высокий (от 5000 ₽)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="prefTime">Время суток</label>
+                        <select id="prefTime" class="styled-select">
+                            <option value="any">Не важно</option>
+                            <option value="morning">Утро</option>
+                            <option value="day">День</option>
+                            <option value="evening">Вечер</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="prefPeople">Количество людей</label>
+                        <select id="prefPeople" class="styled-select">
+                            <option value="any">Не важно</option>
+                            <option value="1">Один</option>
+                            <option value="2">Двое</option>
+                            <option value="3">Несколько (3-5)</option>
+                            <option value="group">Компания (5+)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Сохранить</button>
+                </form>
+            </section>
+        </main>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Проверяем сохранённого пользователя
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                const user = JSON.parse(savedUser);
+                document.getElementById('usernameDisplay').textContent = user.name;
+                document.getElementById('profileUsername').value = user.name;
+                document.getElementById('profileEmail').textContent = user.email;
+            }
+        });
+    </script>
+</body>
+</html>
