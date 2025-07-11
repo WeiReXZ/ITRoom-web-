@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-панель — TimeFinder</title>
+    <link rel="stylesheet" href="all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="firebase-app-compat.js"></script>
+    <script src="firebase-auth-compat.js"></script>
+    <script src="firebase-database-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <style>
+        .admin-panel {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .admin-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .activity-form .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .activity-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .activity-form input, 
+        .activity-form textarea,
+        .activity-form select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 15px;
+        }
+        
+        .activity-form textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 8px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .admin-activities {
+            margin-top: 40px;
+        }
+        
+        .activity-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+        }
+        
+        .activity-item {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn-delete {
+            background: var(--danger);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-compass"></i>
+                <span>WhatToDo</span>
+            </div>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Главная</span>
+                </a>
+                <a href="favorites.html" class="nav-item">
+                    <i class="fas fa-heart"></i>
+                    <span>Избранное</span>
+                </a>
+                <a href="settings.html" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Настройки</span>
+                </a>
+                <a href="admin.html" class="nav-item">
+                    <i class="fas fa-lock"></i>
+                    <span>Админ-панель</span>
+                </a>
+            </nav>
+            
+            <div class="user-profile">
+                <div class="avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-info">
+                    <span class="username" id="usernameDisplay">Гость</span>
+                    <span class="user-status">Подробнее</span>
+                </div>
+            </div>
+        </aside>
+        <main class="main-content">
+            <section class="admin-panel">
+                <div class="section-header">
+                    <h2><i class="fas fa-lock"></i> Админ-панель</h2>
+                </div>
+                
+                <div class="admin-card">
+                    <h3>Добавить новую активность</h3>
+                    <form id="activityForm" class="activity-form">
+                        <div class="form-group">
+                            <label for="activityName">Название активности</label>
+                            <input type="text" id="activityName" required placeholder="Например: Поход в кино">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="activityDescription">Описание</label>
+                            <textarea id="activityDescription" required placeholder="Подробное описание активности"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Настроение</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="mood" value="happy"> Радостное
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="mood" value="neutral"> Нейтральное
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="mood" value="sad"> Грустное
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="mood" value="energetic"> Энергичное
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="mood" value="relaxed"> Расслабленное
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="activityTime">Время (часы)</label>
+                                <input type="number" id="activityTime" required min="1" placeholder="2">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="activityBudget">Бюджет</label>
+                                <select id="activityBudget" required>
+                                    <option value="free">Бесплатно</option>
+                                    <option value="low">Низкий</option>
+                                    <option value="medium">Средний</option>
+                                    <option value="high">Высокий</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Количество людей</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="people" value="1"> Один
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="people" value="2"> Двое
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="people" value="3"> Несколько (3-5)
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="people" value="group"> Компания (5+)
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="activityCategory">Категория</label>
+                            <input type="text" id="activityCategory" required placeholder="Например: entertainment">
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <i class="fas fa-plus"></i> Добавить активность
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="admin-card admin-activities">
+                    <h3>Существующие активности</h3>
+                    <div class="activity-list" id="activityList">
+                        <div class="empty-state">
+                            <i class="fas fa-list"></i>
+                            <p>Нет добавленных активностей</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+ <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('activityForm');
+        const activityList = document.getElementById('activityList');
+        
+        // Загружаем существующие активности
+        loadActivities();
+        
+        // Обработка формы
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Собираем данные
+            const name = document.getElementById('activityName').value;
+            const description = document.getElementById('activityDescription').value;
+            const time = parseInt(document.getElementById('activityTime').value);
+            const budget = document.getElementById('activityBudget').value;
+            const category = document.getElementById('activityCategory').value;
+            
+            // Собираем выбранные настроения
+            const moodCheckboxes = form.querySelectorAll('input[name="mood"]:checked');
+            const mood = Array.from(moodCheckboxes).map(cb => cb.value);
+            
+            // Собираем выбранные варианты количества людей
+            const peopleCheckboxes = form.querySelectorAll('input[name="people"]:checked');
+            const people = Array.from(peopleCheckboxes).map(cb => cb.value);
+            
+            // Создаем объект активности (ИСПРАВЛЕНО: используем name вместо title)
+            const activity = {
+                name: name,
+                description,
+                mood,
+                time,
+                budget,
+                people,
+                category,
+                rating: 4.5
+            };
+            
+            try {
+                const response = await fetch('/api/activities', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(activity)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // Очищаем форму
+                    form.reset();
+                    
+                    // Показываем сообщение об успехе
+                    alert('Активность успешно добавлена!');
+                    
+                    // Обновляем список
+                    loadActivities();
+                } else {
+                    alert('Ошибка: ' + (data.error || 'Не удалось добавить активность'));
+                }
+            } catch (error) {
+                alert('Ошибка сети: ' + error.message);
+            }
+        });
+        
+        // Функция загрузки активностей (ОБНОВЛЕНО)
+        async function loadActivities() {
+            try {
+                const response = await fetch('/api/activities');
+                const data = await response.json();
+                
+                if (data.activities && data.activities.length > 0) {
+                    let html = '';
+                    data.activities.forEach(activity => {
+                        // Форматируем настроения
+                        const moodMap = {
+                            'happy': 'Радостное',
+                            'neutral': 'Нейтральное',
+                            'sad': 'Грустное',
+                            'energetic': 'Энергичное',
+                            'relaxed': 'Расслабленное'
+                        };
+                        
+                        // Форматируем количество людей
+                        const peopleMap = {
+                            '1': 'Один',
+                            '2': 'Двое',
+                            '3': 'Несколько (3-5)',
+                            'group': 'Компания (5+)'
+                        };
+                        
+                        // Форматируем бюджет
+                        const budgetMap = {
+                            'free': 'Бесплатно',
+                            'low': 'Низкий',
+                            'medium': 'Средний',
+                            'high': 'Высокий'
+                        };
+                        
+                        // Форматируем значения для отображения
+                        const formattedMood = activity.mood.map(m => moodMap[m] || m).join(', ');
+                        const formattedPeople = activity.people.map(p => peopleMap[p] || p).join(', ');
+                        const formattedBudget = budgetMap[activity.budget] || activity.budget;
+                        
+                        html += `
+                        <div class="activity-item" data-id="${activity.id}">
+                            <div>
+                                <strong>${activity.name}</strong>
+                                <div>${activity.description}</div>
+                                <div class="activity-details">
+                                    <span>Категория: ${activity.category}</span>
+                                    <span>Время: ${activity.time}ч</span>
+                                    <span>Бюджет: ${formattedBudget}</span>
+                                </div>
+                                <div class="activity-meta">
+                                    <span>Настроение: ${formattedMood}</span>
+                                    <span>Люди: ${formattedPeople}</span>
+                                </div>
+                            </div>
+                            <div class="activity-actions">
+                                <button class="btn btn-icon btn-delete" onclick="deleteActivity(${activity.id})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        `;
+                    });
+                    activityList.innerHTML = html;
+                } else {
+                    activityList.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-list"></i>
+                            <p>Нет добавленных активностей</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                activityList.innerHTML = `
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-circle"></i>
+                        Ошибка загрузки данных: ${error.message}
+                    </div>
+                `;
+            }
+        }
+        
+        // Функция удаления активности
+        window.deleteActivity = async function(id) {
+            if (confirm('Вы уверены, что хотите удалить эту активность?')) {
+                try {
+                    const response = await fetch(`/api/activities/${id}`, {
+                        method: 'DELETE'
+                    });
+                    
+                    if (response.ok) {
+                        loadActivities();
+                        alert('Активность успешно удалена');
+                    } else {
+                        const data = await response.json();
+                        alert('Ошибка: ' + (data.error || 'Не удалось удалить активность'));
+                    }
+                } catch (error) {
+                    alert('Ошибка сети: ' + error.message);
+                }
+            }
+        };
+        
+        // Проверяем пользователя
+        const savedUser = localStorage.getItem('currentUser');
+        if (savedUser) {
+            const user = JSON.parse(savedUser);
+            document.getElementById('usernameDisplay').textContent = user.name;
+        }
+    });
+</script>

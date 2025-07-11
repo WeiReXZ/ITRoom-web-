@@ -2,7 +2,6 @@
 let currentUser = null;
 let activities = [];
 let favorites = [];
-let history = [];
 
 // API базовый URL
 const API_BASE = 'http://localhost:3000/api';
@@ -112,7 +111,7 @@ async function initApp() {
     await loadActivities();
     initAuth();
     initNavigation();
-    initUserMenu(); // Добавляем инициализацию меню пользователя
+    initUserMenu();
     initRecommendations();
     initFavorites();
     initHistory();
@@ -490,7 +489,6 @@ async function updateRecommendations() {
     const time = document.getElementById('time')?.value;
     const budget = document.getElementById('budget')?.value;
     const people = document.getElementById('people')?.value;
-    // Получаем категорию из radio-кнопок
     const category = document.querySelector('input[name="category"]:checked')?.value;
     const distance = document.getElementById('distance')?.value;
     
@@ -688,7 +686,7 @@ async function addToFavorites(activityId) {
             if (activity) {
                 favorites.push(activity);
                 showNotification('Добавлено в избранное', 'success');
-                updateRecommendations(); // Обновляем отображение
+                updateRecommendations();
             }
         }
     } catch (error) {
@@ -708,8 +706,8 @@ async function removeFromFavorites(activityId) {
         if (response.ok) {
             favorites = favorites.filter(fav => fav.id !== activityId);
             showNotification('Удалено из избранного', 'success');
-            displayFavorites(); // Обновляем отображение избранного
-            updateRecommendations(); // Обновляем отображение рекомендаций
+            displayFavorites();
+            updateRecommendations();
         }
     } catch (error) {
         console.error('Ошибка удаления из избранного:', error);
@@ -937,7 +935,6 @@ function showNotification(message, type = 'info') {
         notification.style.transform = 'translateX(0)';
     }, 100);
     
-    // Автоматическое удаление
     setTimeout(() => {
         notification.style.transform = 'translateX(100%)';
         setTimeout(() => {

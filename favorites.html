@@ -31,6 +31,10 @@
                     <i class="fas fa-cog"></i>
                     <span>Настройки</span>
                 </a>
+                <a href="admin.html" class="nav-item">
+                    <i class="fas fa-lock"></i>
+                    <span>Админ-панель</span>
+                </a>
             </nav>
             
             <div class="user-profile">
@@ -59,14 +63,126 @@
         </main>
     </div>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Проверяем сохранённого пользователя
+        const API_BASE = 'http://localhost:3000/api';
+        
+        async function loadFavorites() {
             const savedUser = localStorage.getItem('currentUser');
-            if (savedUser) {
-                const user = JSON.parse(savedUser);
-                document.getElementById('usernameDisplay').textContent = user.name;
+            if (!savedUser) {
+                document.getElementById('favoritesContainer').innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-user-lock"></i>
+                        <h3>Вы не авторизованы</h3>
+                        <p>Для просмотра избранного войдите в систему</p>
+                        <div style="margin-top: 20px;">
+                            <a href="login.html" class="btn btn-primary">Войти</a>
+                        </div>
+                    </div>
+                `;
+                return;
             }
-        });
+            
+            const user = JSON.parse(savedUser);
+            document.getElementById('usernameDisplay').textContent = user.name;
+            
+            try {
+                const response = await fetch(`${API_BASE}/user/${user.id}/favorites/activity/${id}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    displayFavorites(data.activities || []);
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки избранного:', error);
+                document.getElementById('favoritesContainer').innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Ошибка загрузки</h3>
+                        <p>Не удалось загрузить избранное</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function displayFavorites(favorites) {
+            const container = document.getElementById('favoritesContainer');
+            
+            if (favorites.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-heart-broken"></i>
+                        <h3>Нет избранных идей</h3>
+                        <p>Добавьте понравившиеся идеи в избранное</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            favorites.forEach(activity => {
+                html += `
+                <div class="activity-card fade-in" data-id="${activity.id}">
+                    <h3>${activity.name}</h3>
+                    <p>${activity.description}</p>
+                    <div class="activity-meta">
+                        <span><i class="fas fa-clock"></i> ${activity.time} ч</span>
+                        <span><i class="fas fa-wallet"></i> ${getBudgetText(activity.budget)}</span>
+                        <span><i class="fas fa-users"></i> ${getPeopleText(activity.people)}</span>
+                    </div>
+                    <div class="activity-actions">
+                        <button class="favorite-btn active" onclick="removeFromFavorites(${activity.id})">
+                            <i class="fas fa-heart"></i> Удалить
+                        </button>
+                    </div>
+                </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+        
+        function getBudgetText(budget) {
+            const budgets = {
+                free: "Бесплатно",
+                low: "Низкий",
+                medium: "Средний",
+                high: "Высокий"
+            };
+            return budgets[budget] || budget;
+        }
+        
+        function getPeopleText(people) {
+            if (Array.isArray(people)) {
+                if (people.includes('group')) return 'Для компании';
+                if (people.includes('3')) return 'Для нескольких';
+                if (people.includes('2')) return 'Для двоих';
+                return 'Для одного';
+            } else {
+                if (people === 'group') return 'Для компании';
+                if (people === '3') return 'Для нескольких';
+                if (people === '2') return 'Для двоих';
+                return 'Для одного';
+            }
+        }
+        
+        async function removeFromFavorites(activityId) {
+            const savedUser = localStorage.getItem('currentUser');
+            if (!savedUser) return;
+            
+            const user = JSON.parse(savedUser);
+            
+            try {
+                const response = await fetch(`${API_BASE}/user/${user.id}/favorites/${activityId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    loadFavorites(); // Перезагружаем список
+                }
+            } catch (error) {
+                console.error('Ошибка удаления из избранного:', error);
+                alert('Ошибка удаления из избранного');
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', loadFavorites);
     </script>
 </body>
 </html>

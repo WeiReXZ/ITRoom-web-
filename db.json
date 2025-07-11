@@ -5,7 +5,9 @@
       "name": "Deni",
       "email": "endwnk@gmail.com",
       "password": "deni",
-      "favorites": [],
+      "favorites": [
+        2
+      ],
       "history": [],
       "settings": {
         "darkMode": false
@@ -50,45 +52,6 @@
     }
   ],
   "activities": [
-    {
-      "id": 1,
-      "name": "Прогулка в парке",
-      "description": "Расслабляющая прогулка на свежем воздухе с возможностью насладиться природой.",
-      "mood": [
-        "happy",
-        "neutral",
-        "relaxed"
-      ],
-      "time": 1,
-      "budget": "free",
-      "people": [
-        "1",
-        "2",
-        "3",
-        "group"
-      ],
-      "category": "outdoor",
-      "rating": 4.5
-    },
-    {
-      "id": 2,
-      "name": "Поход в кино",
-      "description": "Посетите кинотеатр и посмотрите новый фильм с друзьями или семьёй.",
-      "mood": [
-        "happy",
-        "neutral",
-        "relaxed"
-      ],
-      "time": 3,
-      "budget": "medium",
-      "people": [
-        "2",
-        "3",
-        "group"
-      ],
-      "category": "entertainment",
-      "rating": 4.3
-    },
     {
       "id": 3,
       "name": "Вечер настольных игр",
@@ -229,6 +192,68 @@
       ],
       "category": "wellness",
       "rating": 4.5
+    },
+    {
+      "name": "кино",
+      "description": "кино",
+      "mood": [
+        "neutral"
+      ],
+      "time": 4,
+      "budget": "medium",
+      "people": [
+        "2"
+      ],
+      "category": "скучный ",
+      "rating": 4.5,
+      "id": 11
+    },
+    {
+      "name": "бокс",
+      "description": "спайринг",
+      "mood": [
+        "happy"
+      ],
+      "time": 4,
+      "budget": "medium",
+      "people": [
+        "2"
+      ],
+      "category": "веселый ",
+      "rating": 4.5,
+      "id": 12
+    },
+    {
+      "name": "бокс ",
+      "description": "спорт",
+      "category": "Спорт",
+      "mood": [
+        "happy",
+        "neutral"
+      ],
+      "time": 2,
+      "budget": "free",
+      "people": [
+        "1",
+        "2"
+      ],
+      "rating": 4.5,
+      "id": 13
+    },
+    {
+      "name": "кино",
+      "description": "кино",
+      "mood": [
+        "neutral"
+      ],
+      "time": 4,
+      "budget": "medium",
+      "people": [
+        "2"
+      ],
+      "category": "скучный ",
+      "rating": 4.5,
+      "id": 14
     }
   ]
 }
